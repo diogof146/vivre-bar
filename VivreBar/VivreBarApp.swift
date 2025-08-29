@@ -11,12 +11,9 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
 
         if let button = statusItem.button {
-            if let bundle = Bundle.main.path(forResource: "vivre-bar_VivreBar", ofType: "bundle"),
 
-               let resourceBundle = Bundle(path: bundle),
+               if let gifPath = Bundle.main.path(forResource: "vivre", ofType: "gif") {
 
-               let gifPath = resourceBundle.path(forResource: "vivre", ofType: "gif")
-            {
                 let gifURL = URL(fileURLWithPath: gifPath)
 
                 if let imageSource = CGImageSourceCreateWithURL(gifURL as CFURL, nil) {
