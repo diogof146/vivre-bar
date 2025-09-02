@@ -4,9 +4,9 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
     private var statusItem: NSStatusItem!
     private var frames: [NSImage] = []
     private var currentFrameIndex = 0
-    private var animationTimer: Timer?
     private let ciContext: CIContext
-    private var colorMode: ColorMode = .system
+    private let settingsMenu = SettingsMenu()
+    private var animationTimer: Timer?
 
     enum ColorMode {
         case original
@@ -22,7 +22,7 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
     private func processFrame(_ cgImage: CGImage) -> NSImage {
         let nsImage = NSImage(cgImage: cgImage, size: NSSize(width: 23, height: 23))
 
-        switch colorMode {
+        switch getColorMode() {
         case .original:
             return nsImage
 
@@ -52,17 +52,17 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
     private func applyColorReplacement(to image: CIImage, with color: NSColor) -> CIImage {
         // Converting NSColor to CIColor
         guard let ciColor = CIColor(color: color) else {
-            return image // Fallback
+            return image  // Fallback
         }
 
         // Extract the alpha channel to use as mask
         let alphaChannel = image.applyingFilter(
             "CIColorMatrix",
             parameters: [
-                "inputRVector": CIVector(x: 0, y: 0, z: 0, w: 1), // Red = alpha
-                "inputGVector": CIVector(x: 0, y: 0, z: 0, w: 1), // Green = alpha
-                "inputBVector": CIVector(x: 0, y: 0, z: 0, w: 1), // Blue = alpha
-                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1), // Alpha = alpha
+                "inputRVector": CIVector(x: 0, y: 0, z: 0, w: 1),  // Red = alpha
+                "inputGVector": CIVector(x: 0, y: 0, z: 0, w: 1),  // Green = alpha
+                "inputBVector": CIVector(x: 0, y: 0, z: 0, w: 1),  // Blue = alpha
+                "inputAVector": CIVector(x: 0, y: 0, z: 0, w: 1),  // Alpha = alpha
             ]
         )
 
@@ -85,7 +85,7 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
                 if let imageSource = CGImageSourceCreateWithURL(gifURL as CFURL, nil) {
                     let frameCount = CGImageSourceGetCount(imageSource)
 
-                    for i in 0 ..< frameCount {
+                    for i in 0..<frameCount {
                         if let cgImage = CGImageSourceCreateImageAtIndex(imageSource, i, nil) {
                             frames.append(processFrame(cgImage))
                         }
@@ -96,7 +96,9 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
                     }
 
                     // Start animation timer
-                    animationTimer = Timer.scheduledTimer(withTimeInterval: 0.05, repeats: true) {
+                    animationTimer = Timer.scheduledTimer(
+                        withTimeInterval: getAnimationSpeed(), repeats: true
+                    ) {
                         _ in
                         self.currentFrameIndex = (self.currentFrameIndex + 1) % self.frames.count
                         self.statusItem.button?.image = self.frames[self.currentFrameIndex]
@@ -110,6 +112,33 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
         }
     }
 
+    // Get the color mode from User defaults
+    private func getColorMode() -> ColorMode {
+        // todo
+        return .system
+    }
+
+    // Get the animation speed from User Defaults
+    private func getAnimationSpeed() -> TimeInterval {
+        let speed = UserDefaults.standard.double(forKey: "animationSpeed")
+        return speed == 0 ? 0.05 : speed  // Default to 0.05 if not set
+    }
+
+    // Opens the menu on click
+    @objc private func statusItemClicked() {
+        settingsMenu.show(from: statusItem)
+    }
+
+    // Restarts the timer for the animation speed
+    private func restartTimer() {
+        animationTimer?.invalidate()
+        animationTimer = Timer.scheduledTimer(withTimeInterval: getAnimationSpeed(), repeats: true)
+        { _ in
+            self.currentFrameIndex = (self.currentFrameIndex + 1) % self.frames.count
+            self.statusItem.button?.image = self.frames[self.currentFrameIndex]
+        }
+    }
+
     func applicationDidFinishLaunching(_: Notification) {
         // Create menu bar item
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
@@ -117,5 +146,12 @@ class VivreBarApp: NSObject, NSApplicationDelegate {
 
         // Hide dock icon (menu bar only app)
         NSApp.setActivationPolicy(.accessory)
+
+        statusItem.button?.target = self
+        statusItem.button?.action = #selector(statusItemClicked)
+
+        settingsMenu.onSpeedChanged = { [weak self] _ in
+            self?.restartTimer()
+        }
     }
 }
