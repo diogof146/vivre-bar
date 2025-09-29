@@ -18,3 +18,4 @@ DerivedData/
 *.xcscmblueprint
 .nvim/
 buildServer.json
+*.tar.gz
