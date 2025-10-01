@@ -1,8 +1,28 @@
-# VivreBar - README
+# VivreBar
 
 A delightfully useless macOS menu bar app that brings GIFs to your menu bar with customizable effects and colors.
 
 It initially was designed because I wanted a specific gif on my own menu bar, though I later decided to create the option to add other GIFs, just in case someone was looking for the same feature.
+
+## Previews
+
+<p align="center">
+  <img src="screenshots/vivre_gif.gif" alt="Vivre Card GIF in the menu bar"/>
+  <br/>
+  <em>Vivre Card GIF in action</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/nika_gif.gif" alt="Gear 5 Luffy GIF in the menu bar"/>
+  <br/>
+  <em>Gear 5 Luffy GIF in action</em>
+</p>
+
+<p align="center">
+  <img src="screenshots/settings_menu.png" width="300" alt="Settings menu"/>
+  <br/>
+  <em>Settings menu</em>
+</p>
 
 ## Features
 
@@ -65,39 +85,9 @@ Custom GIFs are stored in:
 
 To remove uploaded GIFs, manually delete them from this directory.
 
-## Previews
-
-<div style: align="center">
-<img src="screenshots/vivre_gif.gif" align="center"/>
-
-*Vivre Card GIF in action*
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-<img src="screenshots/nika_gif.gif" align="center"/>
-
-*Gear 5 Luffy GIF in action*
-
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-&nbsp;
-
-<img src="screenshots/settings_menu.png" width ="300" align="center"/>
-
-*Settings Menu*
-</div>
-
 ## Support
 
-Having trouble getting a specific GIF to work perfectly? Feel free to reach out!
-
-**Email**: diogof146business@gmail.com
+Having trouble getting a specific GIF to work perfectly? Feel free to reach out through the [contact form on my website](https://diogof146.com/#contact)!
 
 I'm happy to help optimize GIFs for the best menu bar experience.
 
